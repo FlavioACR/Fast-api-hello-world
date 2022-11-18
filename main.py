@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 # Importamos la clase FastAPI
 from fastapi import FastAPI
-from fastapi import Body
+from fastapi import Body, Query
 
 # Creamos una variable que contendra toda nuesta aplicación,
 # Instanciando la clase de fastAPI:
@@ -49,4 +49,11 @@ def home():
 # Los triples ... como un parametro son sinonimo de un parametro obligatorio en FastAPI
 def create_person(person: Person = Body(...)):
     return person
-    
+
+# Validaciones: Query Parameters:
+@app.get("/person/detail") # Query parameter
+def show_person(
+    name: Optional[str] = Query(None, min_length=1, max_length=50),
+    age: str = Query(...)
+):
+    return {name: age}
