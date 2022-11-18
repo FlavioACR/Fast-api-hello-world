@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 # Importamos la clase FastAPI
 from fastapi import FastAPI
-from fastapi import Body, Query
+from fastapi import Body, Query, Path
 
 # Creamos una variable que contendra toda nuesta aplicación,
 # Instanciando la clase de fastAPI:
@@ -51,9 +51,32 @@ def create_person(person: Person = Body(...)):
     return person
 
 # Validaciones: Query Parameters:
-@app.get("/person/detail") # Query parameter
+@app.get("/person/detail") # Ende Point Recibe Query parameter
 def show_person(
-    name: Optional[str] = Query(None, min_length=1, max_length=50),
-    age: str = Query(...)
+    name: Optional[str] = Query(
+        None, 
+        min_length=1, 
+        max_length=50,
+        # Esto fue colocado en validaciones de parametros:
+        title="Person Name",
+        description="This is the persone name. It's between 1 and 50 characters"
+        ),
+    age: str = Query(
+        ...,
+        title="Person Age",
+        description="This is the person age. It's required")
 ):
     return {name: age}
+
+# Validaciones: Path Parameters:
+# Recibe Path Parameters:
+
+@app.get('/person/detail/{person_id}')
+def show_person(
+    person_id : int = Path(
+        ..., 
+        gt=0,
+        title="Person id",
+        description="This is the person age & must be greater than 0") # Greater than
+):
+    return {person_id: "It exists!"}
