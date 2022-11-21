@@ -43,22 +43,38 @@ class Person(BaseModel):
         ...,
         min_length=1,
         max_length=50,
+        example="Flavio"
         )
     last_name: str = Field(
         ...,
         min_length=1,
         max_length=50,
+        example="Carrola"
         )
     age: int = Field(
         ...,
         gt=0, 
-        le=115
+        le=115,
+        example=27
         )
     # Valores Opcionales:
     # Esta Validación se realiza con el modulo Enum: Un conjunto de strins
     # y para validar le pasamos la clase como tipo;
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
+    hair_color: Optional[HairColor] = Field(default=None, example="black")
+    is_married: Optional[bool] = Field(default=None, example=False)
+    # <>> RETO AGREGAR 3 ATRIBUTOS DE TIPO DE VALOR EXOTICO Y VALIDARLOS.
+    # CORREO,# TARJETA,# DIRECCIÓN
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "firt_name": 'Facundo',
+    #             "last_name": 'Garcí Martoni',
+    #             "age": 21,
+    #             "hair_color":'blonde',
+    #             "is_married": False,
+    #         }
+    #     }
+
 
 
 
@@ -123,10 +139,11 @@ def update_person(
         gt=0
     ),
     person: Person = Body(...),
-    location: Location = Body(...)
+    # location: Location = Body(...)
    
 ):
     # Cuando son dos retorno se necesita combertir:
-    results = person.dict()
-    results.update(location.dict())
-    return results
+    # results = person.dict()
+    # results.update(location.dict())
+    # return results
+    return person
