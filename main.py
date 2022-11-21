@@ -3,9 +3,10 @@
 
 # Python:
 from typing import Optional # Para tipado Estatico: 
+from enum import Enum # Enumeraciones de Strings:
 
 # Pydantic:
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Importamos la clase FastAPI
 from fastapi import FastAPI
@@ -16,6 +17,16 @@ from fastapi import Body, Query, Path
 app = FastAPI()
 
 # Models:
+
+# Hereda Enum:
+class HairColor(Enum):
+    white = 'white'
+    brown = 'brown'
+    black = 'black'
+    blonde = 'blonde'
+    red = 'red'
+
+
 class Location(BaseModel):
     city: str
     state: str
@@ -27,12 +38,27 @@ class Person(BaseModel):
     Hereda la clase BaseModel
     '''
     # Caracteristicas o atributos de la entidad:
-    firts_name: str
-    last_name: str 
-    age: int
+    # Validaciones con Field():
+    firts_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        )
+    age: int = Field(
+        ...,
+        gt=0, 
+        le=115
+        )
     # Valores Opcionales:
-    hair_color: Optional[str] = None
-    is_married: Optional[bool] = None
+    # Esta Validación se realiza con el modulo Enum: Un conjunto de strins
+    # y para validar le pasamos la clase como tipo;
+    hair_color: Optional[HairColor] = Field(default=None)
+    is_married: Optional[bool] = Field(default=None)
 
 
 
