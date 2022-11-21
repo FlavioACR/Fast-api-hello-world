@@ -106,12 +106,14 @@ def show_person(
         max_length=50,
         # Esto fue colocado en validaciones de parametros:
         title="Person Name",
-        description="This is the persone name. It's between 1 and 50 characters"
+        description="This is the persone name. It's between 1 and 50 characters",
+        example="Scarlette"
         ),
     age: str = Query(
         ...,
         title="Person Age",
-        description="This is the person age. It's required")
+        description="This is the person age. It's required"),
+        example=38
 ):
     return {name: age}
 
@@ -124,7 +126,8 @@ def show_person(
         ..., 
         gt=0,
         title="Person id",
-        description="This is the person age & must be greater than 0") # Greater than
+        description="This is the person age & must be greater than 0"),
+        example=123
 ):
     return {person_id: "It exists!"}
 
@@ -136,7 +139,8 @@ def update_person(
         ...,
         title="Person ID",
         description="This is the persone ID",
-        gt=0
+        gt=0,
+        example=123
     ),
     person: Person = Body(...),
     # location: Location = Body(...)
