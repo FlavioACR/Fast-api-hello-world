@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 # Importamos la clase FastAPI
 from fastapi import FastAPI
+from fastapi import status
 from fastapi import Body, Query, Path
 
 # Creamos una variable que contendra toda nuesta aplicación,
@@ -80,9 +81,11 @@ class PersonOut(PersonBase):
     pass
 
 
-
 # Path Operations Decorator:
-@app.get("/") # Con esto decimos que en el home de la app se ejecutara la función:
+@app.get(
+    path="/",
+    status_code=status.HTTP_200_OK
+    ) # Con esto decimos que en el home de la app se ejecutara la función:
 def home():
     '''Hello World Function'''
     # Cuando una API se comunica lo hace mediante archivos JSON y en python
@@ -97,13 +100,19 @@ def home():
 # una nueva persona.
 # El modelo PersonOut se utiliza como respuesta para no regresar la contrasea enviada
 # por el cliente:
-@app.post("/person/new", response_model=PersonOut)
+@app.post(
+    path="/person/new",
+    response_model=PersonOut,
+    status_code=status.HTTP_201_CREATED
+    )
 # Los triples ... como un parametro son sinonimo de un parametro obligatorio en FastAPI
 def create_person(person: Person = Body(...)):
     return person
 
 # Validaciones: Query Parameters:
-@app.get("/person/detail") # Ende Point Recibe Query parameter
+@app.get(
+    path="/person/detail",
+    status_code=status.HTTP_200_OK) # Ende Point Recibe Query parameter
 def show_person(
     name: Optional[str] = Query(
         None, 
@@ -125,7 +134,9 @@ def show_person(
 # Validaciones: Path Parameters:
 # Recibe Path Parameters:
 
-@app.get('/person/detail/{person_id}')
+@app.get(
+    path='/person/detail/{person_id}',
+    status_code=status.HTTP_200_OK)
 def show_person(
     person_id : int = Path(
         ..., 
@@ -138,7 +149,9 @@ def show_person(
 
 # Validaciones: Request Body
 
-@app.put("/person/{persone_id}")
+@app.put(
+    path="/person/{persone_id}",
+    status_code=status.HTTP_200_OK)
 def update_person(
     person_id: int = Path(
         ...,
