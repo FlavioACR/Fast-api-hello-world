@@ -26,16 +26,14 @@ class HairColor(Enum):
     blonde = 'blonde'
     red = 'red'
 
-
 class Location(BaseModel):
     city: str
     state: str
     country: str
 
-
-class Person(BaseModel):
+class PersonBase(BaseModel):
     '''
-    Hereda la clase BaseModel
+     Hereda la clase BaseModel
     '''
     # Caracteristicas o atributos de la entidad:
     # Validaciones con Field():
@@ -62,6 +60,8 @@ class Person(BaseModel):
     # y para validar le pasamos la clase como tipo;
     hair_color: Optional[HairColor] = Field(default=None, example="black")
     is_married: Optional[bool] = Field(default=None, example=False)
+class Person(PersonBase):
+    password: str = Field(..., min_length=8)
     # <>> RETO AGREGAR 3 ATRIBUTOS DE TIPO DE VALOR EXOTICO Y VALIDARLOS.
     # CORREO,# TARJETA,# DIRECCIÓN
     # class Config:
@@ -75,6 +75,9 @@ class Person(BaseModel):
     #         }
     #     }
 
+class PersonOut(PersonBase):
+    # Calase persona pero sin la contraseña para regresarla como response al cliente
+    pass
 
 
 
@@ -92,7 +95,9 @@ def home():
 # Como vamos a enviar datos desde el cliente es necesario usa el post.
 # En este caso el entry poit, el cual por su texto nos permitira crear
 # una nueva persona.
-@app.post("/person/new")
+# El modelo PersonOut se utiliza como respuesta para no regresar la contrasea enviada
+# por el cliente:
+@app.post("/person/new", response_model=PersonOut)
 # Los triples ... como un parametro son sinonimo de un parametro obligatorio en FastAPI
 def create_person(person: Person = Body(...)):
     return person
